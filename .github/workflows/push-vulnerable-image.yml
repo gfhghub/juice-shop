@@ -1,0 +1,21 @@
+name: Push vulnerable image to Docker Hub
+
+# Run this manually from the Actions tab (no push/PR trigger needed)
+on:
+  workflow_dispatch:
+
+jobs:
+  push-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Pull an end-of-life base image and push it to your namespace
+        run: |
+          docker pull node:12
+          docker tag node:12 ${{ secrets.DOCKERHUB_USERNAME }}/aikido-container-demo:node12
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/aikido-container-demo:node12
